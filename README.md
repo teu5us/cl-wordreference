@@ -12,6 +12,7 @@ CL-WORDREFERENCE is a command-line interface to [wordreference.com](https://word
 1. Parse Collins data
 2. Print translations
 3. Command-line interface
+4. Define default dictionaries for languages (wr/collins)
 
 ## License
 
