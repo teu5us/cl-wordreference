@@ -1,7 +1,7 @@
 ;;;; language.lisp
 
 (defpackage #:cl-wordreference.language
-  (:use #:cl)
+  (:use #:cl #:cl-wordreference.net #:cl-wordreference.parse)
   (:import-from #:cl-wordreference.conditions
                 #:unknown-language
                 #:new-language
