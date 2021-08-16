@@ -1,6 +1,6 @@
 # cl-wordreference
 
-CL-WORDREFERENCE is a command-line interface to [wordreference.com](wordreference.com).
+CL-WORDREFERENCE is a command-line interface to [wordreference.com](https://wordreference.com).
 
 ## DONE
 
