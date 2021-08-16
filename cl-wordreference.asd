@@ -13,4 +13,6 @@
                #:dexador
                #:quri
                #:unix-opts)
-  :components ((:file "cl-wordreference")))
+  :components ((:file "conditions")
+               (:file "language")
+               (:file "cl-wordreference")))

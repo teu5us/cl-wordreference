@@ -2,52 +2,13 @@
 
 (defpackage #:cl-wordreference
   (:use #:cl)
-  (:import-from #:uiop #:quit))
+  (:import-from #:uiop #:quit)
+  (:import-from #:cl-wordreference.conditions
+                #:unknown-dictionary
+                #:no-response
+                #:no-translation-found))
 
 (in-package #:cl-wordreference)
-
-(define-condition unknown-language (simple-warning)
-  ((short :initarg :short
-          :reader short))
-  (:report (lambda (condition stream)
-             (format stream "No language matching ~A."
-                     (short condition)))))
-
-(define-condition new-language (simple-warning)
-  ((name :initarg :name
-         :reader name)
-   (short :initarg :short
-          :reader short)
-   (pairs :initarg :pairs
-          :reader pairs))
-  (:report (lambda (condition stream)
-             (format stream "Defining language ~S with:~%~5Tshort ~S~%~5Tpairs ~S."
-                     (name condition)
-                     (short condition)
-                     (pairs condition)))))
-
-(define-condition redefining-language (new-language)
-  ()
-  (:report (lambda (condition stream)
-             (format stream "Redefining language ~S with:~%~5Tshort ~S~%~5Tpairs ~S."
-                     (name condition)
-                     (short condition)
-                     (pairs condition)))))
-
-(define-condition no-response (simple-warning)
-  ((code :initarg :code
-         :reader code))
-  (:report (lambda (condition stream)
-             (format stream "Could not get response from Wordreference, code: ~A"
-                     (code condition)))))
-
-(define-condition unknown-dictionary (simple-warning)
-  ((dict :initarg :dict
-         :reader dict))
-  (:report (lambda (condition stream)
-             (format stream "Unknown dictionary: ~A." (dict condition)))))
-
-(defvar *languages* nil)
 
 (defun group-by (lst key test)
   (loop :for item :in lst
@@ -63,10 +24,6 @@
         :finally (progn
                    (push (reverse collection) result)
                    (return (reverse result)))))
-
-(defun find-language (short)
-  (or (find short *languages* :key #'short :test #'eql)
-      (warn 'unknown-language :short short)))
 
 (defun choose-dictionary (dictionary)
   (case dictionary
@@ -166,43 +123,6 @@
     (loop :for table :across translation-tables
           :collect (parse-wordreference-table table))))
 
-(defclass language ()
-  ((name :initarg :name
-         :initform nil
-         :accessor name)
-   (short :initarg :short
-          :initform nil
-          :accessor short)
-   (pairs :initarg :pairs
-          :initform nil
-          :accessor pairs))
-  (:documentation "Class to represent languages."))
-
-(defmethod make-pair ((lang-key-1 symbol) (lang-key-2 symbol) &key hyphen)
-  (format nil "~(~A~@[-~*~]~A~)" lang-key-1 hyphen lang-key-2))
-
-(defmethod make-pair ((lang-string-1 string) (lang-string-2 string) &key (hyphen t))
-  (format nil "~A~@[-~*~]~A" lang-string-1 hyphen lang-string-2))
-
-(defmethod make-pair ((obj-1 language) (obj-2 language) &key hyphen)
-  (declare (ignorable hyphen))
-  (values (make-pair (name obj-1) (name obj-2))
-          (make-pair (short obj-1) (short obj-2))))
-
-(defmethod translate-from-to ((obj-1 language) (obj-2 language) word dictionary)
-  (declare (type string word)
-           (type keyword dictionary))
-  (multiple-value-bind (verbose-pair pair) (make-pair obj-1 obj-2)
-    (declare (ignorable verbose-pair))
-    (let ((html (get-wrd-response pair word dictionary))
-          (parser
-            (case dictionary
-              ((:wordreference :wr :reverse :wrr)
-               #'parse-wordreference)
-              ((:collins :col)
-               #'parse-collins))))
-      (funcall parser html))))
-
 (defun translate (lang-key-1 lang-key-2 word &key (dictionary :wordreference))
   (declare (type keyword lang-key-1 lang-key-2 dictionary)
            (type string word))
@@ -212,40 +132,5 @@
         (translate-from-to lang-1 lang-2 word dictionary)
         (warn 'no-translation-found :short-1 lang-key-1
                                     :short-2 lang-key-2
+                                    :dictionary dictionary
                                     :word word))))
-
-(defun deflang (name short pairs)
-  (let ((lang (find-language short))
-        (definitions (list :name name
-                           :short short
-                           :pairs pairs)))
-    (if lang
-        (progn
-          (apply #'warn 'redefining-language definitions)
-          (setf (name lang) name
-                (short lang) short
-                (pairs lang) pairs))
-        (progn
-          (apply #'warn 'new-language definitions)
-          (push (apply #'make-instance 'language definitions)
-                *languages*)))))
-
-(deflang "English" :en '(:es :fr :it :de :nl :sv :ru :pt :pl :ro :cz :el :tr :zh :ja :ko :ar))
-(deflang "Spanish" :es '(:en :fr :pt :it :de :ca))
-(deflang "French" :fr '(:en :es))
-(deflang "Italian" :it '(:en :es))
-(deflang "German" :de '(:en :es))
-(deflang "Dutch" :nl '(:en))
-(deflang "Swedish" :sv '(:en))
-(deflang "Russian" :ru '(:en))
-(deflang "Portuguese" :pt '(:en :es))
-(deflang "Polish" :pl '(:en))
-(deflang "Romanian" :ro '(:en))
-(deflang "Czech" :cz '(:cz))
-(deflang "Greek" :el '(:en))
-(deflang "Greek" :el '(:en))
-(deflang "Turkish" :tr '(:en))
-(deflang "Chinese" :zh '(:en))
-(deflang "Japanese" :ja '(:en))
-(deflang "Korean" :ko '(:en))
-(deflang "Arabic" :ar '(:en))
