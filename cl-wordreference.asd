@@ -9,10 +9,11 @@
   :depends-on (#:lquery
                #:plump
                #:str
-               #:group-by
                #:dexador
                #:quri
                #:unix-opts)
   :components ((:file "conditions")
+               (:file "net")
+               (:file "parse")
                (:file "language")
                (:file "cl-wordreference")))
