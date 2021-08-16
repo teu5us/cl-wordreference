@@ -4,8 +4,9 @@ CL-WORDREFERENCE is a command-line interface to [wordreference.com](https://word
 
 ## DONE
 
-1. Retrieve WR, Collins and WRR pages
-2. Parse WR data
+1. Language definitions
+2. Retrieve WR, Collins and WRR pages
+3. Parse WR data
 
 ## TODO
 
