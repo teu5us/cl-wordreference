@@ -10,7 +10,12 @@
   (intern (string-upcase arg) :keyword))
 
 (defun parse-format (arg)
-  (null (string-equal arg "org")))
+  (let ((format (unless (string-equal arg "")
+                  (intern (string-upcase arg) :keyword))))
+    (case format
+      ((:md :markdown) 1)
+      (:org 2)
+      (otherwise 0))))
 
 (opts:define-opts
   (:name :help
@@ -79,7 +84,7 @@
                        (getf options :to)
                        (format nil "~{~A~^ ~}" free-args)
                        :indent (null (getf options :indent))
-                       :org/md (getf options :format)
+                       :format (or (getf options :format) 0)
                        :nocolor (getf options :nocolor))))
         (progn
           (format t "No word supplied.~%")
