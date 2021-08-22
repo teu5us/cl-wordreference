@@ -51,7 +51,7 @@
                       title
                       data))))
 
-(defun translate (lang-key-1 lang-key-2 word &key (stream *standard-output*) (indent t) org/md)
+(defun translate (lang-key-1 lang-key-2 word &key (stream *standard-output*) indent org/md)
   (print-translation
    (retrieve-translation lang-key-1
                          lang-key-2

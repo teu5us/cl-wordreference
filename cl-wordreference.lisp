@@ -28,9 +28,9 @@
    :long "to"
    :arg-parser #'parse-lang)
   (:name :indent
-   :description "Indent output."
-   :short #\i
-   :long "indent")
+   :description "Remove indentation."
+   :short #\n
+   :long "noindent")
   (:name :format
    :description "Format to use: org or markdown."
    :short #\F
@@ -74,7 +74,7 @@
             (translate (getf options :from)
                        (getf options :to)
                        (format nil "~{~A~^ ~}" free-args)
-                       :indent (getf options :indent)
+                       :indent (null (getf options :indent))
                        :org/md (getf options :format))))
         (progn
           (format t "No word supplied.~%")
