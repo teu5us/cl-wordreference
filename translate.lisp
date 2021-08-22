@@ -23,11 +23,11 @@
   (format nil "~@[  ~*~]~:[**~;##~] ~~A~@[~%~*~]
   ~@[  ~*~]~~@[~~{~~A~~^,~~^ ~~}~~]~@[~%~*~]
 ~@[    ~*~]~~@[~:[***~;###~] Examples~@[~%~*~]
-  ~@[    ~*~]~~{- ~~A~~^~~%~~}~~%~~]~@[~%~*~]"
+  ~@[    ~*~]~~{- ~~A~~^~~%~~}~~%~~]"
           indent org/md org/md
           indent org/md
           indent org/md org/md
-          indent org/md))
+          indent))
 
 ;; indent is columnp
 ;; org/md is atsignp
