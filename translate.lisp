@@ -19,15 +19,20 @@
                                     :short-2 lang-key-2
                                     :word word))))
 
-(defun make-wr-format-string (indent org/md)
-  (format nil "~@[  ~*~]~:[**~;##~] ~~A~@[~%~*~]
+(defun pre-format (indent org/md &optional title)
+  (if title
+      (format nil "~:[*~;#~] ~~A~@[~%~*~]
+~~{~~~@[@~*~]~@[:~*~]/cl-wordreference.translate::print-wr-translation/~~}"
+              org/md org/md
+              org/md indent)
+      (format nil "~@[  ~*~]~:[**~;##~] ~~A~@[~%~*~]
   ~@[  ~*~]~~@[~~{~~A~~^,~~^ ~~}~~]~@[~%~*~]
 ~@[    ~*~]~~@[~:[***~;###~] Examples~@[~%~*~]
   ~@[    ~*~]~~{- ~~A~~^~~%~~}~~%~~]"
           indent org/md org/md
           indent org/md
           indent org/md org/md
-          indent))
+          indent)))
 
 ;; indent is columnp
 ;; org/md is atsignp
@@ -35,20 +40,14 @@
   (destructuring-bind (word translations examples)
       translation
     (format stream
-            (make-wr-format-string indent org/md)
+            (pre-format indent org/md)
             word translations examples)))
-
-(defun pre-format (indent org/md)
-  (format nil "~:[*~;#~] ~~A~@[~%~*~]
-~~{~~~@[@~*~]~@[:~*~]/cl-wordreference.translate::print-wr-translation/~~}"
-          org/md org/md
-          org/md indent))
 
 (defun print-translation (translation &optional indent org/md (stream *standard-output*))
   (loop :for table :in translation
         :do (destructuring-bind (title &rest data) table
               (format stream
-                      (pre-format indent org/md)
+                      (pre-format indent org/md title)
                       title
                       data))))
 
