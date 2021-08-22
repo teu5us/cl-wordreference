@@ -20,7 +20,10 @@
           :accessor short)
    (pairs :initarg :pairs
           :initform nil
-          :accessor pairs))
+          :accessor pairs)
+   (available :initarg :available
+              :initform t
+              :accessor available))
   (:documentation "Class to represent languages."))
 
 (defmethod make-pair ((lang-key-1 symbol) (lang-key-2 symbol) &key hyphen)
@@ -34,19 +37,11 @@
   (values (make-pair (name obj-1) (name obj-2))
           (make-pair (short obj-1) (short obj-2))))
 
-(defmethod translate-from-to ((obj-1 language) (obj-2 language) word dictionary)
-  (declare (type string word)
-           (type keyword dictionary))
+(defmethod translate-from-to ((obj-1 language) (obj-2 language) word)
+  (declare (type string word))
   (multiple-value-bind (verbose-pair pair) (make-pair obj-1 obj-2)
     (declare (ignorable verbose-pair))
-    (let ((html (get-wrd-response pair word dictionary))
-          (parser
-            (case dictionary
-              ((:wordreference :wr :reverse :wrr)
-               #'parse-wordreference)
-              ((:collins :col)
-               #'parse-collins))))
-      (funcall parser html))))
+    (parse-wordreference (get-wrd-response pair word))))
 
 (defvar *languages* nil)
 
@@ -54,7 +49,7 @@
   (or (find short *languages* :key #'short :test #'eql)
       (warn 'unknown-language :short short)))
 
-(defun deflang (name short pairs)
+(defun deflang (name short pairs &optional (available t))
   (let ((lang (find-language short))
         (definitions (list :name name
                            :short short
@@ -77,7 +72,7 @@
 (deflang "German" :de '(:en :es))
 (deflang "Dutch" :nl '(:en))
 (deflang "Swedish" :sv '(:en))
-(deflang "Russian" :ru '(:en))
+(deflang "Russian" :ru '(:en) nil)
 (deflang "Portuguese" :pt '(:en :es))
 (deflang "Polish" :pl '(:en))
 (deflang "Romanian" :ro '(:en))

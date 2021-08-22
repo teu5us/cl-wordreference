@@ -52,12 +52,12 @@
                              (lquery:$1 to (text)))))
               (lquery-s/p :p examples
                           (lquery:$1 row ".FrEx" (text))))
-        :finally (return (list :word word
-                               :translations translations
-                               :examples examples))))
+        :finally (return (list word
+                               translations
+                               examples))))
 
 (defun parse-wordreference-table (table)
-  (let ((table-title (lquery:$1 table ".wrtopsection" (text)))
+  (let ((table-title (lquery:$1 table ".wrtopsection" "strong" (text)))
         (table-as-rows (lquery:$ table "tr")))
     (destructuring-bind (title pairs &rest rows)
         (coerce table-as-rows 'list)

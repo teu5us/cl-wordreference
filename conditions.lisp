@@ -43,22 +43,14 @@
              (format stream "Could not get response from Wordreference, code: ~A"
                      (code condition)))))
 
-(define-condition unknown-dictionary (simple-warning)
-  ((dict :initarg :dict
-         :reader dict))
-  (:report (lambda (condition stream)
-             (format stream "Unknown dictionary: ~A." (dict condition)))))
-
 (define-condition no-translation-found (simple-warning)
   ((short-1 :initarg :short-1
             :reader short-1)
    (short-2 :initarg :short-2
             :reader short-2)
-   (dictionary :initarg :dictionary
-               :reader dictionary)
    (word :initarg :word
          :reader word))
   (:report (lambda (condition stream)
-             (with-slots (short-1 short-2 dictionary word) condition
-               (format stream "No translation found for word ~S in pair ~A-~A in dictionary ~S."
-                       word short-1 short-2 dictionary)))))
+             (with-slots (short-1 short-2 word) condition
+               (format stream "No translation found for word ~S in pair ~A-~A."
+                       word short-1 short-2)))))
