@@ -9,6 +9,9 @@
 (defun parse-lang (arg)
   (intern (string-upcase arg) :keyword))
 
+(defun parse-format (arg)
+  (null (string-equal arg "org")))
+
 (opts:define-opts
   (:name :help
    :description "Print this help."
@@ -23,7 +26,16 @@
    :description "Language to translate to."
    :short #\t
    :long "to"
-   :arg-parser #'parse-lang))
+   :arg-parser #'parse-lang)
+  (:name :indent
+   :description "Indent output."
+   :short #\i
+   :long "indent")
+  (:name :format
+   :description "Format to use: org or markdown."
+   :short #\F
+   :long "format"
+   :arg-parser #'parse-format))
 
 (defun unknown-option (condition)
   (format t "warning: ~s option is unknown!~%" (opts:option condition))
@@ -61,7 +73,9 @@
           (when-option (options :to)
             (translate (getf options :from)
                        (getf options :to)
-                       (format nil "~{~A~^ ~}" free-args))))
+                       (format nil "~{~A~^ ~}" free-args)
+                       :indent (getf options :indent)
+                       :org/md (getf options :format))))
         (progn
-          (format t "No word supplied.")
+          (format t "No word supplied.~%")
           (quit 1)))))
