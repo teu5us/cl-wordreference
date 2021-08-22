@@ -35,7 +35,11 @@
    :description "Format to use: org or markdown."
    :short #\F
    :long "format"
-   :arg-parser #'parse-format))
+   :arg-parser #'parse-format)
+  (:name :nocolor
+   :description "Remove colors."
+   :short #\N
+   :long "nocolor"))
 
 (defun unknown-option (condition)
   (format t "warning: ~s option is unknown!~%" (opts:option condition))
@@ -75,7 +79,8 @@
                        (getf options :to)
                        (format nil "~{~A~^ ~}" free-args)
                        :indent (null (getf options :indent))
-                       :org/md (getf options :format))))
+                       :org/md (getf options :format)
+                       :nocolor (getf options :nocolor))))
         (progn
           (format t "No word supplied.~%")
           (quit 1)))))
