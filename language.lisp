@@ -7,7 +7,8 @@
                 #:new-language
                 #:redefining-language)
   (:export #:translate-from-to
-           #:find-language))
+           #:find-language
+           #:print-languages))
 
 (in-package #:cl-wordreference.language)
 
@@ -44,6 +45,13 @@
     (parse-wordreference (get-wrd-response pair word))))
 
 (defvar *languages* nil)
+
+(defun print-languages ()
+  (dolist (l (sort *languages*
+                   #'(lambda (l1 l2)
+                       (string< (name l1) (name l2)))))
+    (with-slots (name short) l
+      (format t "~A ~A~%" name short))))
 
 (defun find-language (short)
   (or (find short *languages* :key #'short :test #'eql)

@@ -2,6 +2,7 @@
 
 (defpackage #:cl-wordreference
   (:use #:cl #:cl-wordreference.translate)
+  (:import-from #:cl-wordreference.language #:print-languages)
   (:import-from #:uiop #:quit))
 
 (in-package #:cl-wordreference)
@@ -44,7 +45,11 @@
   (:name :nocolor
    :description "Remove colors."
    :short #\N
-   :long "nocolor"))
+   :long "nocolor")
+  (:name :languages
+   :description "Print supported languages."
+   :short #\l
+   :long "langs"))
 
 (defun unknown-option (condition)
   (format t "warning: ~s option is unknown!~%" (opts:option condition))
@@ -73,10 +78,14 @@
           (opts:exit 1)))
     (when-option (options :help)
       (opts:describe
-       :prefix "interface to wordreference.com"
+       :prefix "Interface to wordreference.com"
        :suffix ""
        :usage-of "wordref"
-       :args     "[WORD]"))
+       :args     "[WORD]")
+      (quit 0))
+    (when-option (options :languages)
+      (print-languages)
+      (quit 0))
     (if free-args
         (when-option (options :from)
           (when-option (options :to)
