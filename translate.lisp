@@ -27,12 +27,12 @@
               org/md indent)
       (format nil "~@[  ~*~]~:[**~;##~] ~~A~@[~%~*~]
   ~@[  ~*~]~~@[~~{~~A~~^,~~^ ~~}~~]~@[~%~*~]
-~@[    ~*~]~~@[~:[***~;###~] Examples~@[~%~*~]
-  ~@[    ~*~]~~{- ~~A~~^~~%~~}~~%~~]"
+~~@[~@[    ~*~]~:[***~;###~] Examples~@[~%~*~]
+  ~@[    ~*~]~~{- ~~A~~^~~%~~}~~%~~]~@[~%~*~]"
           indent org/md org/md
           indent org/md
           indent org/md org/md
-          indent)))
+          indent org/md)))
 
 ;; indent is columnp
 ;; org/md is atsignp
