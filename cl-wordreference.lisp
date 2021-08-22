@@ -37,7 +37,7 @@
    :short #\n
    :long "noindent")
   (:name :format
-   :description "Format to use: org or markdown."
+   :description "Format to use: [plain|md|markdown|org]."
    :short #\F
    :long "format"
    :arg-parser #'parse-format)
