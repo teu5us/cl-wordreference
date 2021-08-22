@@ -20,8 +20,7 @@
                (:file "cl-wordreference"))
   :build-operation "program-op"
   :build-pathname #.(or (uiop:getenv "WORDREF")
-                        (ensure-directories-exist
-                         (merge-pathnames ".local/bin/wordref" (user-homedir-pathname))))
+                        "wordref")
   :entry-point "cl-wordreference::main")
 
 #+sb-core-compression
