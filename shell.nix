@@ -1,10 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 
 with pkgs;
+with (import ./bundle.nix { inherit pkgs; });
 
 mkShell {
   buildInputs = [
-    openssl.out
+    ql2nix
+    lisp-bundle
   ];
-  LD_LIBRARY_PATH = lib.makeLibraryPath [ openssl.out ];
 }
