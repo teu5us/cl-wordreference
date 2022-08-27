@@ -10,6 +10,7 @@ stdenv.mkDerivation {
   name = "wordref";
   version = "0.0.1";
   src = ./.;
+  nativeBuildInputs = [ makeWrapper ];
   buildInputs = [
     lisp-bundle
     openssl.out
@@ -23,6 +24,8 @@ stdenv.mkDerivation {
   installPhase = ''
     mkdir -p "$out/bin"
     cp wordref "$out"/bin/
+    wrapProgram $out/bin/wordref \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ openssl.out ]}"
   '';
   dontConfigure = true;
   dontPatch = true;
